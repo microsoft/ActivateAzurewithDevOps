@@ -23,9 +23,9 @@ resource appServiceApp 'Microsoft.Web/sites@2020-06-01' = {
   properties: {
     serverFarmId: appServicePlan.id
     httpsOnly: true
-    ftpsState: 'FtpsOnly'
     siteConfig: {
       minTlsVersion: '1.2'
+      ftpsState: 'FtpsOnly'
     }
   }
 }
