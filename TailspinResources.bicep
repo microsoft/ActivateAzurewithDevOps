@@ -17,9 +17,16 @@ resource appServicePlan 'Microsoft.Web/serverFarms@2020-06-01' = {
 resource appServiceApp 'Microsoft.Web/sites@2020-06-01' = {
   name: websiteName
   location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     serverFarmId: appServicePlan.id
     httpsOnly: true
+    ftpsState: 'FtpsOnly'
+    siteConfig: {
+      minTlsVersion: '1.2'
+    }
   }
 }
 
@@ -34,9 +41,6 @@ resource devSlot 'Microsoft.Web/sites/slots@2016-08-01' = {
   properties: {
     serverFarmId: appServicePlan.id
   }
-  dependsOn:[
-    appServiceApp
-  ]
 }
 
 resource stagingSlot 'Microsoft.Web/sites/slots@2016-08-01' = {
@@ -49,9 +53,7 @@ resource stagingSlot 'Microsoft.Web/sites/slots@2016-08-01' = {
   properties: {
     serverFarmId: appServicePlan.id
   }
-  dependsOn:[
-    appServiceApp
-  ]
+
 }
 
 //create the app insights
@@ -66,9 +68,7 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   properties: {
     Application_Type: 'web'
   }
-  dependsOn:[
-    appServiceApp
-  ]
+
 }
 
 resource appInsightsDev 'Microsoft.Insights/components@2020-02-02' = {
@@ -82,9 +82,7 @@ resource appInsightsDev 'Microsoft.Insights/components@2020-02-02' = {
   properties: {
     Application_Type: 'web'
   }
-  dependsOn:[
-    devSlot
-  ]
+
 }
 
 resource appInsightsStaging 'Microsoft.Insights/components@2020-02-02' = {
@@ -98,8 +96,6 @@ resource appInsightsStaging 'Microsoft.Insights/components@2020-02-02' = {
   properties: {
     Application_Type: 'web'
   }
-  dependsOn:[
-    stagingSlot
-  ]
+
 }
 
